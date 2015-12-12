@@ -18,11 +18,21 @@ def readable_string_with_offset(offset):
 
 def main(wf):
     if len(wf.args):
-        query = wf.args[0]
-        if query.isdigit():
-            wf.add_item(title="Current unix timestamp",
+        query = str(wf.args[0])
+
+        if query.startswith('+') or query.startswith('-'):
+            real_num = query[1:]
+            if real_num.isdigit():
+               wf.add_item(title="Current unix timestamp",
                         subtitle=readable_string_with_offset(int(query)),
                         arg=timestamp_with_offset(int(query))[0],
+                        valid=True)
+
+        elif query.isdigit():
+            result = datetime.datetime.fromtimestamp(int(query)).strftime('%Y-%m-%d %H:%M:%S')
+            wf.add_item(title="Current unix timestamp",
+                        subtitle=query + " " + result,
+                        arg=result,
                         valid=True)
 
         try:
